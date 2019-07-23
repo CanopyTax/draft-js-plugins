@@ -107,8 +107,11 @@ export default ({ config, store }) => (WrappedComponent) => class BlockResizeabl
 
       const widthForPercCalculation = (isTop || isBottom) && vertical === 'relative' ? height * imageRatio : width; // ! calculate new width value in percents
 
-      const widthPerc = (100 / editorNode.clientWidth) * widthForPercCalculation; // !;
+      let widthPerc = (100 / editorNode.clientWidth) * widthForPercCalculation; // !;
 
+      if (widthPerc > 100) {
+        widthPerc = 100;
+      }
       const newState = {};
       if ((isLeft || isRight) && horizontal === 'relative') {
         newState.width = resizeSteps ? round(widthPerc, resizeSteps) : widthPerc;
