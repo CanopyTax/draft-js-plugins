@@ -93,17 +93,14 @@ export default ({ config, store }) => (WrappedComponent) => class BlockResizeabl
     // Do the actual drag operation
     const doDrag = (dragEvent) => {
       let width = startWidth + (isLeft ? startX - dragEvent.clientX : dragEvent.clientX - startX);
-      let height = (startHeight + dragEvent.clientY) - startY;
-      if (isTop) {
-        height = startHeight + (startY - dragEvent.clientY);
-      }
+      const height = startHeight + (isTop ? startY - dragEvent.clientY : dragEvent.clientY - startY);
 
       const editorComp = store.getEditorRef();
       // this keeps backwards-compatibility with react 15
       const editorNode = editorComp.refs.editor ? editorComp.refs.editor : editorComp.editor;
 
       width = editorNode.clientWidth < width ? editorNode.clientWidth : width;
-      height = editorNode.clientHeight < height ? editorNode.clientHeight : height;
+      // height = editorNode.clientHeight < height ? editorNode.clientHeight : height; --- I don't believe we should be constrained by height as the document grows if the height exceeds a single page. Also causing bug when dragging by top or bottom with the left/right-align mode on does not grow bigger than editorNode.clientHeight, editorNode.clientHeight being a small number that doesn't make sense
 
       const widthForPercCalculation = (isTop || isBottom) && vertical === 'relative' ? height * imageRatio : width; // ! calculate new width value in percents
 
